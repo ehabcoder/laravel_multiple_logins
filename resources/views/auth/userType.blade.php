@@ -1,4 +1,5 @@
 @extends('dashboard')
+@include('flash-message')
 @section('content')
 <main class="login-form">
     <div class="cotainer">
