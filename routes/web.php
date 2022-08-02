@@ -22,8 +22,10 @@ Route::get('checkUserType', [CustomAuthController::class, 'checkUserType'])->nam
 
 Route::get('registerOrchastra', [CustomAuthController::class, 'regesterOrchastra'])->name('register-orchestra');
 Route::get('registerMusician', [CustomAuthController::class, 'registerMusician'])->name('register-musician');
+Route::get('registerMember', [CustomAuthController::class, 'registerMember'])->name('register-member');
 
 Route::post('custom-registration', [CustomAuthController::class, 'customRegistration'])->name('register.custom'); 
+Route::post('member-registration', [CustomAuthController::class, 'memberRegistration'])->name('register.member'); 
 Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
 
 Route::get('/email/verify', function () {

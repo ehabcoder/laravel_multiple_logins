@@ -1,17 +1,9 @@
 @extends('dashboard')
-@include('flash-message')
 @section('content')
 <main class="signup-form">
     <div class="cotainer">
         <div class="row justify-content-center">
             <div class="col-md-4">
-            @if (\Session::has('msg'))
-            <div class="alert alert-danger">
-                <ul>
-                    <li>{!! \Session::get('msg') !!}</li>
-                </ul>
-            </div>
-            @endif
                 <div class="card">
                     <h3 class="card-header text-center">Register Orchestra</h3>
                     <div class="card-body">

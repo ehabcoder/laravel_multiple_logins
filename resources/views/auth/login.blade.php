@@ -1,6 +1,6 @@
 @extends('dashboard')
-@include('../flash-message')
 @section('content')
+
 <main class="login-form">
     <div class="cotainer">
         <div class="row justify-content-center">

@@ -5,14 +5,11 @@
         <div class="row justify-content-center">
             <div class="col-md-4">
                 <div class="card">
-                    <h3 class="card-header text-center">Register Musician</h3>
+                    <h3 class="card-header text-center">Register Member</h3>
                     <div class="card-body">
-                        <form action="{{ route('register.custom') }}" method="POST">
+                        <form action="{{ route('register.member') }}" method="POST">
                             @csrf
-
-                            <input type="hidden" name="type" value="musician" />
-
-                            <input type="hidden" name="orchastraName" value="">
+                            <input type="hidden" name="type" value="member" />
 
                             <div class="form-group mb-3">
                                 <input type="email" placeholder="Email address" id="email_address" class="form-control"

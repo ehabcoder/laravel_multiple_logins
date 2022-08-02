@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Member;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -39,14 +40,16 @@ class CustomAuthController extends Controller
         } else {
             // now we are certainly know that the user has only one email
             // with one type so let's save that type in a session
-            $request->session()->put('userType', $request->only('type'));
+            // $request->session()->put('userType', $request->only('type'));
             // then we sign the user in using the credentials
             if (Auth::attempt($credentials)) {
-                return redirect()->intended('dashboard')->with('success', 'signed in!');
+                session(['msg' => 'signed in!']);
+                return redirect()->intended('dashboard');
             }
             // if there is an error in the creds then
             // we redirect him to the login page again
-            return redirect("login")->with('error', 'Login details are not valid');
+            session(['msg' => 'Login details are not valid!']);
+            return redirect("login");
         }
     }
 
@@ -75,6 +78,11 @@ class CustomAuthController extends Controller
     public function registerMusician()
     {
         return view('auth.registerMusician');
+    }
+
+    // To get the regester member page
+    public function registerMember() {
+        return view('auth.registerMember');
     }
 
     // This is a post function for handling the registration of the user.
@@ -111,12 +119,14 @@ class CustomAuthController extends Controller
                 /* if we find the same email with the same type we redirect
                 the user back with error msg */
                 if ($users[$i]->type == $data['type']) {
-                    return redirect()->back()->with('error', 'This email with that type is already exists.');
+                    session(['msg' => 'This email with that type is already exists.']);
+                    return redirect()->back();
                 }
                 /* if the password not the same as the passwords of the
                 other accounts we again redirect him back with error msg */
                 if (!Hash::check($data['password'], $users[$i]->password)) {
-                    return redirect()->back()->with('error', 'The Password must be equal to the password you used in other accounts.');
+                    session(['msg' => 'The Password must be equal to the password you used in other accounts.']);
+                    return redirect()->back();
                 }
             }
 
@@ -139,15 +149,82 @@ class CustomAuthController extends Controller
         }
         $query = $user->save();
         if($query) {
+            // // Save the user type to a sessoion
+            // $request->session()->put('userType', $data['type']);
             // Authenticate the user before rendering the dashboard
             $credentials = $request->only('email', 'password');
             Auth::attempt($credentials);
             // redirect to the dashboard
-            return redirect("dashboard")->with('info','Your account has been created successfully');      
+            session(['msg' => 'Your account has been created successfully']);
+            return redirect("dashboard");     
         }
         else
         {
-            return redirect()->back()->with('error','Something went wrong. Please try again');
+            session(['msg' => 'Something went wrong. Please try again']);
+            return redirect()->back();
+        }
+    }
+
+    /* 
+    Handling the registration of the member.
+    Maybe this function is dublicated and I would have used 
+    only one function to register the whole 3 types of users
+    but, I think that split the members alone from the users
+    will be good and more secure.
+    */
+    public function memberRegistration(Request $request) {
+         // validating the inputs
+         $request->validate([
+            'email' => 'required|email|unique:members',
+            'gender' => 'required',
+            'fname' => 'required',
+            'surname' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        // get all the data from the request
+        $data = $request->all();
+
+        
+        $user=0;
+        if ($data['type'] == 'member') {
+            // get all the users with that email from the database
+            $users = DB::table('users')->where('email', $data['email'])->get();
+
+            // loop over users to check if we already have that email in the users table
+            for ($i = 0; $i < count($users); $i++) {
+                /* if the password not the same as the passwords of the
+                other accounts we redirect him back with error msg */
+                if (!Hash::check($data['password'], $users[$i]->password)) {
+                    session(['msg' => 'The Password must be equal to the password you used in other accounts.']);
+                    return redirect()->back();
+                }
+            }
+
+            /*
+            if it skipped the for loop that means we are ready to create
+            the new Member
+             */
+            $user = Member::create([
+                'email' => $data['email'],
+                'gender' => $data['gender'],
+                'first_name' => $data['fname'],
+                'surname' => $data['surname'],
+                'type' => $data['type'],
+                'password' => Hash::make($data['password']),
+            ]);
+            event(new Registered($user));
+        }
+        $query = $user->save();
+        if($query) {
+            // redirect to the dashboard
+            session(['msg' => 'Your account has been created successfully']);
+            return redirect("dashboard");     
+        }
+        else
+        {
+            session(['msg' => 'Something went wrong. Please try again.']);
+            return redirect()->back();
         }
     }
 
@@ -160,13 +237,15 @@ class CustomAuthController extends Controller
     public function emailVerificationVerify(EmailVerificationRequest $request)
     {
         $request->fulfill();
-        return redirect('dashboard')->with('success', 'Email verified successfully!');
+        session(['msg' => 'Email verified successfully!']);
+        return redirect('dashboard');
     }
 
     public function resendEmailVerificationLink(Request $request)
     {
         $request->user()->sendEmailVerificationNotification();
-        return back()->with('info','Verification link sent!');
+        session(['msg' => 'Verification link sent!']);
+        return back();
     }
 
     // The datshboard where all stuff rendered
@@ -181,13 +260,13 @@ class CustomAuthController extends Controller
         }
         if (Auth::check()) {
             if ($request->input('type')) {
-                $request->session()->put('userType', $request->input('type'));
+                // $request->session()->put('userType', $request->input('type'));
                 return view('dashboard');
             }
             return view('dashboard');
         }
-
-        return redirect("login")->with('success', 'You are not allowed to access');
+        session(['msg' => 'You are not allowed to access!']);
+        return redirect("login");
     }
 
     // Signing the user out
@@ -195,6 +274,7 @@ class CustomAuthController extends Controller
     {
         Session::flush();
         Auth::logout();
-        return Redirect('login')->with('success', 'Signed out!');
+        session(['msg' => 'Signed out!']);
+        return Redirect('login');
     }
 }

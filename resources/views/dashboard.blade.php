@@ -22,13 +22,14 @@
         .giveMargin {
             margin-top: -3rem;
         }
+       
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-light navbar-expand-lg mb-5" style="background-color: #e3f2fd;">
         <div class="container">
-            <a class="navbar-brand mr-auto" href="#">Multiple Logins</a>
+            <a class="navbar-brand mr-auto" href="/dashboard">Multiple Logins</a>
 
             <div id="navbarNav">
                 <ul class="navbar-nav">
@@ -46,23 +47,34 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('signout') }}">Logout</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register-member') }}">Register Member</a>
+                    </li>
                     @endguest
                 </ul>
             </div>
         </div>
     </nav>
+    @if(Auth::user()->email_verified_at == null)
+    <div style="margin-top: -3rem;" class="alert alert-danger" role="alert">
+        Please verify your email, An email was sent to your email.
+        <form action="{{ route('verification.send') }}" method="POST">
+        @csrf
+            <button type="submit" class="btn btn-primary">send the verification again</button>
+        </form>
+    </div>
+    @endif
 
-    @guest
+    @include('flash-message')
     @yield('content')
-    @else
-    @endguest
+    
 </body>
 <script>
-    // if(document.getElementById('flash')) {
-    //     document.getElementById('flash').onclick = function() {
-    //     document.getElementById('flash').style.display = 'none';
-    // }
-    // }
+    if(document.getElementById('flash')) {
+        document.getElementById('flash').onclick = function() {
+        document.querySelector('.msg').style.display = 'none';
+    }
+    }
     
 </script>
 </html>
