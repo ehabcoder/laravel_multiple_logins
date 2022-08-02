@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 
 class CustomAuthController extends Controller
 {
+    // Render the login page
     public function index()
     {
         return view('auth.login');
@@ -30,7 +31,7 @@ class CustomAuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (count($users) > 1) { // if we have more than one user
             // put the email and password into session because we will
-            // need them in the checkUserType()
+            // need them later in the checkUserType()
             $request->session()->put('email', $request->only('email'));
             $request->session()->put('password', $request->only('password'));
             // then we redirect the user the the chechUserType
@@ -51,17 +52,17 @@ class CustomAuthController extends Controller
             return redirect("login");
         }
     }
-
+    // cheking 
     public function checkUserType()
     {
         // get the users with the same email to render
         // them in the check to let user choose whatever
         // type he wants to register with...
         $users = DB::table('users')->where('email', session('email'))->get();
-
+        $members = DB::table('members')->where('email', session('email'))->get();  
         // render the view that he will choose from it what type He
         // is registering with
-        return view('auth.userType')->with('users', $users);
+        return view('auth.userType')->with('users', $users)->with('member', $members);
         // Note the user will be asked about the type 'Orchastra, Musician or Member'
         // Then he will be redirected to /login/{type} which will render
         // the dashboard controller.
@@ -178,6 +179,7 @@ class CustomAuthController extends Controller
             'gender' => 'required',
             'fname' => 'required',
             'surname' => 'required',
+            'type' => 'required',
             'password' => 'required|min:6|confirmed',
         ]);
 
@@ -253,6 +255,7 @@ class CustomAuthController extends Controller
             $credentials = array("email" => session('email')['email'], "password" => session('password')['password']);
             // Authenticate the user before rendering the next view
             Auth::attempt($credentials);
+            session(['msg' => 'Signed In!']);
         }
         if (Auth::check()) {
             if ($request->input('type')) {

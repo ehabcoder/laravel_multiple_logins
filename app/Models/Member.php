@@ -17,6 +17,7 @@ class Member extends  Authenticatable implements MustVerifyEmail
         'gender',
         'first_name',
         'surname',
+        'type',
         'password',
     ];
 }

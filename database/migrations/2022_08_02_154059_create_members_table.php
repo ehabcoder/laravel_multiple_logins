@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('gender');
             $table->string('first_name');
             $table->string('surname');
+            $table->string('type');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

@@ -22,7 +22,7 @@
         .giveMargin {
             margin-top: -3rem;
         }
-       
+
     </style>
 </head>
 
@@ -71,8 +71,8 @@
     @include('flash-message')
     @yield('content')
     @endguest
-   
-    
+
+
 </body>
 <script>
     if(document.getElementById('flash')) {
@@ -80,6 +80,6 @@
         document.querySelector('.msg').style.display = 'none';
     }
     }
-    
+
 </script>
 </html>
