@@ -7,13 +7,13 @@
               <div class="card">
                   <div class="card-header">Reset Password</div>
                   <div class="card-body">
-  
+
                     @if (Session::has('message'))
                          <div class="alert alert-success" role="alert">
                             {{ Session::get('message') }}
                         </div>
                     @endif
-  
+
                       <form action="{{ route('forget.password.post') }}" method="POST">
                           @csrf
                           <div class="form-group row">
@@ -31,7 +31,7 @@
                               </button>
                           </div>
                       </form>
-                        
+
                   </div>
               </div>
           </div>

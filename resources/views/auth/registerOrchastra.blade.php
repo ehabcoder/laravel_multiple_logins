@@ -65,7 +65,7 @@
                                 <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
                                 @endif
                             </div>
-                            
+
                             <div class="form-group mb-3">
                                 <div class="checkbox">
                                     <label><input type="checkbox" name="remember"> Remember Me</label>
@@ -74,7 +74,7 @@
 
                             <div class="form-group mb-3">
                                 <div class="checkbox">
-                                    <a>Forget Password</a> 
+                                    <a href="{{route('forget.password.get')}}">Forget Password</a>
                                 </div>
                             </div>
 

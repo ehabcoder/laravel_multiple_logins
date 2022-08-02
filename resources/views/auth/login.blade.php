@@ -30,6 +30,11 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="form-group mb-3">
+                                <div class="checkbox">
+                                    <a href="{{route('forget.password.get')}}">Forget Password</a>
+                                </div>
+                            </div>
                             <div class="d-grid mx-auto">
                                 <button type="submit" class="btn btn-dark btn-block">Signin</button>
                             </div>

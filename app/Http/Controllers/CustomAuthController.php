@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -81,7 +80,8 @@ class CustomAuthController extends Controller
     }
 
     // To get the regester member page
-    public function registerMember() {
+    public function registerMember()
+    {
         return view('auth.registerMember');
     }
 
@@ -109,7 +109,7 @@ class CustomAuthController extends Controller
         of a security issue so we can not let any one to create a member
         only the registered Orchestras or Musician can do.
          */
-        $user=0;
+        $user = 0;
         if ($data['type'] == 'orchestra' || $data['type'] == 'musician') {
             // get all the users with that email from the database
             $users = DB::table('users')->where('email', $data['email'])->get();
@@ -145,10 +145,10 @@ class CustomAuthController extends Controller
                 'orchastraName' => $data['orchastraName'],
                 'password' => Hash::make($data['password']),
             ]);
-            event(new Registered($user));
+            // event(new Registered($user));
         }
         $query = $user->save();
-        if($query) {
+        if ($query) {
             // // Save the user type to a sessoion
             // $request->session()->put('userType', $data['type']);
             // Authenticate the user before rendering the dashboard
@@ -156,25 +156,24 @@ class CustomAuthController extends Controller
             Auth::attempt($credentials);
             // redirect to the dashboard
             session(['msg' => 'Your account has been created successfully']);
-            return redirect("dashboard");     
-        }
-        else
-        {
+            return redirect("dashboard");
+        } else {
             session(['msg' => 'Something went wrong. Please try again']);
             return redirect()->back();
         }
     }
 
-    /* 
+    /*
     Handling the registration of the member.
-    Maybe this function is dublicated and I would have used 
+    Maybe this function is dublicated and I would have used
     only one function to register the whole 3 types of users
     but, I think that split the members alone from the users
     will be good and more secure.
-    */
-    public function memberRegistration(Request $request) {
-         // validating the inputs
-         $request->validate([
+     */
+    public function memberRegistration(Request $request)
+    {
+        // validating the inputs
+        $request->validate([
             'email' => 'required|email|unique:members',
             'gender' => 'required',
             'fname' => 'required',
@@ -184,15 +183,14 @@ class CustomAuthController extends Controller
 
         // get all the data from the request
         $data = $request->all();
-
-        
-        $user=0;
+        $user = 0;
         if ($data['type'] == 'member') {
             // get all the users with that email from the database
             $users = DB::table('users')->where('email', $data['email'])->get();
 
             // loop over users to check if we already have that email in the users table
             for ($i = 0; $i < count($users); $i++) {
+
                 /* if the password not the same as the passwords of the
                 other accounts we redirect him back with error msg */
                 if (!Hash::check($data['password'], $users[$i]->password)) {
@@ -213,16 +211,14 @@ class CustomAuthController extends Controller
                 'type' => $data['type'],
                 'password' => Hash::make($data['password']),
             ]);
-            event(new Registered($user));
+            // event(new Registered($user));
         }
         $query = $user->save();
-        if($query) {
+        if ($query) {
             // redirect to the dashboard
             session(['msg' => 'Your account has been created successfully']);
-            return redirect("dashboard");     
-        }
-        else
-        {
+            return redirect("dashboard");
+        } else {
             session(['msg' => 'Something went wrong. Please try again.']);
             return redirect()->back();
         }
