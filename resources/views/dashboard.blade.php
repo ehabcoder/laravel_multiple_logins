@@ -16,6 +16,9 @@
         .type {
             margin: 1rem;
         }
+        #flash:hover {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -45,6 +48,33 @@
             </div>
         </div>
     </nav>
+    @guest
     @yield('content')
+    @else
+    @if (\Session::has('msg'))
+            <div id="flash" class="alert alert-success">
+                <ul>
+                    <li>{!! \Session::get('msg') !!}</li>
+                </ul>
+            </div>
+    @endif
+
+    @if (\Session::has('type'))
+            <div class="alert alert-success">
+                <ul>
+                    <li>{!! \Session::get('type') !!}</li>
+                </ul>
+            </div>
+    @endif
+
+    @endguest
 </body>
+<script>
+    if(document.getElementById('flash')) {
+        document.getElementById('flash').onclick = function() {
+        document.getElementById('flash').style.display = 'none';
+    }
+    }
+    
+</script>
 </html>

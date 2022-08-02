@@ -19,6 +19,8 @@
 
                             <input type="hidden" name="type" value="musician" />
 
+                            <input type="hidden" name="orchastraName" value="">
+
                             <div class="form-group mb-3">
                                 <input type="email" placeholder="Email address" id="email_address" class="form-control"
                                     name="email" required autofocus>

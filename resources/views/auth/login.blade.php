@@ -4,6 +4,13 @@
     <div class="cotainer">
         <div class="row justify-content-center">
             <div class="col-md-4">
+                @if (\Session::has('msg'))
+                <div class="alert alert-danger">
+                    <ul>
+                        <li>{!! \Session::get('msg') !!}</li>
+                    </ul>
+                </div>
+                @endif
                 <div class="card">
                     <h3 class="card-header text-center">Login</h3>
                     <div class="card-body">

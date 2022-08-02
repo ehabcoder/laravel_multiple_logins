@@ -16,9 +16,9 @@ use App\Http\Controllers\CustomAuthController;
 
 Route::get('dashboard', [CustomAuthController::class, 'dashboard']); 
 Route::get('login', [CustomAuthController::class, 'index'])->name('login');
+Route::get('login/{type}', [CustomAuthController::class, 'dashboard']);
 Route::post('custom-login', [CustomAuthController::class, 'customLogin'])->name('login.custom'); 
 Route::get('checkUserType', [CustomAuthController::class, 'checkUserType'])->name('check-type');
-Route::get('login/{type}', [CustomAuthController::class, 'dashboard']);
 
 Route::get('registerOrchastra', [CustomAuthController::class, 'regesterOrchastra'])->name('register-orchestra');
 Route::get('registerMusician', [CustomAuthController::class, 'registerMusician'])->name('register-musician');
