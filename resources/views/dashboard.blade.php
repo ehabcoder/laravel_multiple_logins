@@ -55,7 +55,11 @@
             </div>
         </div>
     </nav>
-    @if(Auth::user()->email_verified_at == null)
+    @guest
+    @include('flash-message')
+    @yield('content')
+    @else
+    @if(!Auth::user()->email_verified_at)
     <div style="margin-top: -3rem;" class="alert alert-danger" role="alert">
         Please verify your email, An email was sent to your email.
         <form action="{{ route('verification.send') }}" method="POST">
@@ -64,9 +68,10 @@
         </form>
     </div>
     @endif
-
     @include('flash-message')
     @yield('content')
+    @endguest
+   
     
 </body>
 <script>

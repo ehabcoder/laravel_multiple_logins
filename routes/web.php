@@ -1,7 +1,10 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomAuthController;
+use App\Http\Controllers\ForgotPasswordController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,6 +35,8 @@ Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
+
+// Verifying the Email routes##################
 // send the verification message
 Route::get('/email/verify/{id}/{hash}', [CustomAuthController::class, 'emailVerificationVerify'])
 ->middleware(['auth', 'signed'])->name('verification.verify');
@@ -39,3 +44,10 @@ Route::get('/email/verify/{id}/{hash}', [CustomAuthController::class, 'emailVeri
 // resend the verification message
 Route::post('/email/verification-notification', [CustomAuthController::class, 'resendEmailVerificationLink'])
 ->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+
+// Reseting password routes ###################
+Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
+Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
+Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
+Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post');
